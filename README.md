@@ -1,3 +1,5 @@
+# OutSkhole 백엔드
+
 - 백엔드: NodeJS
 - DBMS: MariaDB
 
