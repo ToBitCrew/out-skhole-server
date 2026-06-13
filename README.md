@@ -19,3 +19,5 @@ cors # CORS 설정
 jsonwebtoken # JWT 인증
 bcrypt # 비밀번호 암호화
 nodemon # 개발용 자동재시작(옵션 -D)
+swagger-jsdoc # 주석 기반으로 Swagger 문서 스펙(JSON)을 생성
+swagger-ui-express # 생성된 문서를 시각화하는 UI 서버
