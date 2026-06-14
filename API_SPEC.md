@@ -2,6 +2,7 @@
 
 > 실제 SQL 스키마(`out_skhole.sql`) 기반  
 > 작성일: 2026-06-11 | 상태: 초안 (검토 필요)
+> 수정일: 2026-06-15 | 상태: '8. 부록: 확인 필요 사항'에 '미결 설계 사항' 검토 필요
 
 ---
 
@@ -1132,13 +1133,13 @@
 
 ### 스키마 불일치 / 설계 이슈
 
-| #   | 항목                                         | SQL 현황                                               | 결정/수정 필요                                               |
-| --- | -------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------ |
-| 1   | `ChatBlockTB.chat_content` 길이              | `VARCHAR(50)` — 50자 제한                              | 실제 채팅은 50자보다 길 수 있어 `TEXT` 또는 길이 확대 필요   |
-| 2   | `UserUnivTB.school_id` 타입                  | `SMALLINT` — `School.school_cd CHAR(7)` 과 타입 불일치 | FK 없는 별도 필드인지, 아니면 타입 오류인지 확인 필요        |
-| 3   | `PostTagTB.id` AUTO_INCREMENT 없음           | `id INT NOT NULL` — 수동 관리                          | AUTO_INCREMENT 추가 여부 결정 필요                           |
-| 4   | `UserPunishTB.punish_id` AUTO_INCREMENT 없음 | `punish_id INT NOT NULL`                               | AUTO_INCREMENT 추가 여부 결정 필요                           |
-| 5   | 학생증 이미지 저장 방식                      | `BLOB` (DB 직접 저장)                                  | BLOB은 DB 부하가 큼 → 파일 스토리지(S3 등) + URL로 교체 고려 |
+| #   | 항목                                         | SQL 현황                                               | 결정/수정 필요                                               | 수정                                                                       |
+| --- | -------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| 1   | `ChatBlockTB.chat_content` 길이              | `VARCHAR(50)` — 50자 제한                              | 실제 채팅은 50자보다 길 수 있어 `TEXT` 또는 길이 확대 필요   | `VARCHAR(255)` — 255자 제한 설정                                           |
+| 2   | `UserUnivTB.school_id` 타입                  | `SMALLINT` — `School.school_cd CHAR(7)` 과 타입 불일치 | FK 없는 별도 필드인지, 아니면 타입 오류인지 확인 필요        | `UserUnivTB.school_id smallint(6)` --> `UserUnivTB.school_cd CHAR(7)` 변경 |
+| 3   | `PostTagTB.id` AUTO_INCREMENT 없음           | `id INT NOT NULL` — 수동 관리                          | AUTO_INCREMENT 추가 여부 결정 필요                           | AUTO_INCREMENT 추가                                                        |
+| 4   | `UserPunishTB.punish_id` AUTO_INCREMENT 없음 | `punish_id INT NOT NULL`                               | AUTO_INCREMENT 추가 여부 결정 필요                           | AUTO_INCREMENT 추가                                                        |
+| 5   | 학생증 이미지 저장 방식                      | `BLOB` (DB 직접 저장)                                  | BLOB은 DB 부하가 큼 → 파일 스토리지(S3 등) + URL로 교체 고려 | `VerifyFileTB` 테이블에 저장 및 파일 스토리지(S3 등) + URL로 교체 설정함   |
 
 ### 미결 설계 사항
 
