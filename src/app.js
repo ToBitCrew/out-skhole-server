@@ -1,1 +1,21 @@
-const mariaDB = require("src/config/db.js");
+const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+require('dotenv').config();
+
+const routes = require('./routes/index');
+const errorHandler = require('./middlewares/error.middleware');
+
+const app = express();
+
+app.use(cors({ origin: true, credentials: true }));
+app.use(express.json());
+app.use(cookieParser());
+
+app.get('/', (req, res) => res.json({ message: '서버 정상 작동 중' }));
+
+app.use('/api/v1', routes);
+
+app.use(errorHandler);
+
+module.exports = app;

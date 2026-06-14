@@ -1,17 +1,10 @@
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
+const router = require('express').Router();
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+router.use('/auth', require('./auth.routes'));
+router.use('/users', require('./user.routes'));
+router.use('/posts', require('./post.routes'));
+router.use('/chats', require('./chat.routes'));
+router.use('/schools', require('./school.routes'));
+router.use('/categories', require('./category.routes'));
 
-app.use(cors());
-app.use(express.json());
-
-app.get("/", (req, res) => {
-  res.json({ message: "서버 정상 작동 중" });
-});
-
-app.listen(PORT, () => {
-  console.log(`서버 실행중 : http://localhost:${PORT}`);
-});
+module.exports = router;
