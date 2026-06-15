@@ -567,8 +567,8 @@
 | page         | number |      | 페이지                     |
 | limit        | number |      | 개수                       |
 | post_type    | number |      | 게시글 타입 필터           |
-| cat_major_cd | string |      | 전공 대분류 필터 (CHAR(1)) |
-| cat_mid_cd   | number |      | 전공 중분류 필터           |
+| major_cat_cd | string |      | 전공 대분류 필터 (CHAR(1)) |
+| mid_cat_cd   | number |      | 전공 중분류 필터           |
 
 **응답**: 목록 응답과 동일한 구조
 
@@ -1106,16 +1106,16 @@
   "success": true,
   "data": [
     {
-      "cat_major_cd": "C",
+      "major_cat_cd": "C",
       "cat_major_nm": "공학계열",
       "mid_categories": [
         {
-          "cat_mid_cd": 1,
-          "cat_mid_nm": "컴퓨터·정보통신",
+          "mid_cat_cd": 1,
+          "mid_cat_nm": "컴퓨터·정보통신",
           "sub_categories": [
             {
-              "cat_sub_cd": 1,
-              "cat_sub_nm": "컴퓨터공학"
+              "sub_cat_cd": 1,
+              "sub_cat_nm": "컴퓨터공학"
             }
           ]
         }
@@ -1125,7 +1125,7 @@
 }
 ```
 
-> `cat_major_cd`: A~F (인문사회/자연과학/공학/예체능/의학/광역)
+> `major_cat_cd`: A~F (인문사회/자연과학/공학/예체능/의학/광역)
 
 ---
 
@@ -1150,3 +1150,14 @@
 | 8   | 실시간 채팅             | REST 엔드포인트로 명세                            | DM 전송을 REST로 폴링할지 Socket.io(WebSocket)로 할지 |
 | 9   | 파일 저장 위치          | 미정                                              | 로컬 디스크 / AWS S3 / Cloudflare R2 선택 필요        |
 | 10  | 학생증 인증 승인 방식   | 미정                                              | 관리자가 수동으로 승인하는지 자동화인지               |
+
+### 프로토타입 제한 사항 (나중에 교체 필요)
+
+| **항목**                | **현재 상태**               | **교체 필요**                |
+| ----------------------- | --------------------------- | ---------------------------- |
+| 좋아요·북마크 중복 방지 | 인메모리 Map                | DB 테이블 또는 Redis         |
+| OTP 저장                | 인메모리 Map                | Redis                        |
+| 이메일 발송             | `console.log` 출력          | nodemailer 연동              |
+| 파일 업로드             | URL 직접 수신               | multer + S3                  |
+| NICE 본인인증           | mock CI/DI                  | 실제 NICE API 연동           |
+| `post_id` 등 PK 생성    | `MAX+1` (레이스컨디션 가능) | AUTO_INCREMENT로 스키마 변경 |

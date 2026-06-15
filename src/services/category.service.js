@@ -8,16 +8,16 @@ const getTree = async () => {
   ]);
 
   return majors.map((maj) => ({
-    cat_major_cd: maj.cat_major_cd,
+    major_cat_cd: maj.major_cat_cd,
     cat_major_nm: maj.cat_major_nm,
     mid_categories: mids
-      .filter((m) => m.cat_major_cd === maj.cat_major_cd)
+      .filter((m) => m.major_cat_cd === maj.major_cat_cd)
       .map((mid) => ({
-        cat_mid_cd: mid.cat_mid_cd,
-        cat_mid_nm: mid.cat_mid_nm,
+        mid_cat_cd: mid.mid_cat_cd,
+        mid_cat_nm: mid.mid_cat_nm,
         sub_categories: subs
-          .filter((s) => s.cat_major_cd === mid.cat_major_cd && s.cat_mid_cd === mid.cat_mid_cd)
-          .map((s) => ({ cat_sub_cd: s.cat_sub_cd, cat_sub_nm: s.cat_sub_nm })),
+          .filter((s) => s.major_cat_cd === mid.major_cat_cd && s.mid_cat_cd === mid.mid_cat_cd)
+          .map((s) => ({ sub_cat_cd: s.sub_cat_cd, sub_cat_nm: s.sub_cat_nm })),
       })),
   }));
 };

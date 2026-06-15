@@ -33,7 +33,7 @@ router.use(authenticate);
  *           type: integer
  *         description: "게시글 유형 필터 (1: 일반, 2: 공지, 3: 질문, 4: 중고거래)"
  *       - in: query
- *         name: cat_major_cd
+ *         name: major_cat_cd
  *         schema:
  *           type: string
  *         description: 상위 카테고리 코드 필터

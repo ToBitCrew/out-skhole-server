@@ -38,7 +38,7 @@ const getList = async ({ page, limit, post_type, sub_cat_id, school_cd }) => {
 
 // ── 검색 ─────────────────────────────────────────────────────────────────────
 
-const search = async ({ q, page, limit, post_type, cat_major_cd }) => {
+const search = async ({ q, page, limit, post_type, major_cat_cd }) => {
   const offset = (page - 1) * limit;
   const where = [
     'p.post_status = 2',
@@ -53,13 +53,13 @@ const search = async ({ q, page, limit, post_type, cat_major_cd }) => {
   const params = [`%${q}%`, `%${q}%`, `%${q}%`];
 
   if (post_type != null) { where.push('p.post_type = ?'); params.push(post_type); }
-  if (cat_major_cd) {
+  if (major_cat_cd) {
     where.push(`EXISTS (
       SELECT 1 FROM PostSubCategoryTB psc
-      JOIN EduSubCategory esc ON psc.sub_cat_id = esc.cat_sub_cd
-      WHERE psc.post_id = p.post_id AND esc.cat_major_cd = ?
+      JOIN EduSubCategory esc ON psc.sub_cat_id = esc.sub_cat_cd
+      WHERE psc.post_id = p.post_id AND esc.major_cat_cd = ?
     )`);
-    params.push(cat_major_cd);
+    params.push(major_cat_cd);
   }
 
   const whereStr = 'WHERE ' + where.join(' AND ');

@@ -51,7 +51,7 @@ const search = async (query) => {
   const { rows, total } = await postRepo.search({
     q: query.q, page, limit,
     post_type: query.post_type != null ? parseInt(query.post_type) : null,
-    cat_major_cd: query.cat_major_cd || null,
+    major_cat_cd: query.major_cat_cd || null,
   });
   const items = await Promise.all(rows.map(buildListItem));
   return { items, pagination: { page, limit, total: Number(total), hasNext: page * limit < Number(total) } };

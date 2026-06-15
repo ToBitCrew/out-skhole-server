@@ -31,7 +31,7 @@ const ctrl = require('../controllers/category.controller');
  *                   items:
  *                     type: object
  *                     properties:
- *                       cat_major_cd:
+ *                       major_cat_cd:
  *                         type: string
  *                         example: "01"
  *                       cat_major_nm:
