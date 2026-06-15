@@ -28,13 +28,16 @@ const register = async ({ handle_nm, nick_nm, password, email, school_cd, dept_c
   return { uid, handle_nm, nick_nm };
 };
 
-const login = async ({ handle_nm, password, device, location }) => {
-  if (!handle_nm || !password || !device) {
+const login = async ({ contact, password, device, location }) => {
+  if (!contact || !password || !device) {
     throw new AppError('필수 필드가 누락되었습니다', 400, 'VALIDATION_ERROR');
   }
 
-  const user = await userRepo.findByHandle(handle_nm);
-  if (!user) throw new AppError('아이디 또는 비밀번호가 올바르지 않습니다', 401, 'INVALID_CREDENTIALS');
+  const contactRow = await userRepo.findContactByValue(contact);
+  if (!contactRow) throw new AppError('이메일/전화번호 또는 비밀번호가 올바르지 않습니다', 401, 'INVALID_CREDENTIALS');
+
+  const user = await userRepo.findById(contactRow.uid);
+  if (!user) throw new AppError('이메일/전화번호 또는 비밀번호가 올바르지 않습니다', 401, 'INVALID_CREDENTIALS');
   if (!user.active) throw new AppError('탈퇴한 계정입니다', 403, 'ACCOUNT_INACTIVE');
 
   const punishments = await userRepo.getActivePunishments(user.uid);

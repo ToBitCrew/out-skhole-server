@@ -34,7 +34,6 @@ const hasNickname = async (nick_nm, excludeUid) => {
   return rows.length > 0;
 };
 
-// uid는 AUTO_INCREMENT가 없으므로 MAX+1로 생성
 const getNextUid = async () => {
   const [rows] = await db.query('SELECT COALESCE(MAX(uid), 0) + 1 AS next_id FROM UserTB');
   return rows[0].next_id;

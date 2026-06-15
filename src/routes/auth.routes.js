@@ -88,11 +88,12 @@ router.post('/register', ctrl.register);
  *         application/json:
  *           schema:
  *             type: object
- *             required: [handle_nm, password, device]
+ *             required: [contact, password, device]
  *             properties:
- *               handle_nm:
+ *               contact:
  *                 type: string
- *                 example: honggildong
+ *                 example: user@example.com
+ *                 description: 로그인에 사용하는 이메일(type 0) 또는 전화번호(type 1)
  *               password:
  *                 type: string
  *                 format: password
