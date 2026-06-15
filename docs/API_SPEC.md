@@ -2,7 +2,7 @@
 
 > 실제 SQL 스키마(`out_skhole.sql`) 기반  
 > 작성일: 2026-06-11 | 상태: 초안 (검토 필요)
-> 수정일: 2026-06-15 | 상태: '8. 부록: 확인 필요 사항'에 '미결 설계 사항' 검토 필요
+> 수정일: 2026-06-16 | 상태: 라우트 Swagger 기준으로 갱신
 
 ---
 
@@ -149,19 +149,19 @@
 
 **Request Body**
 
-| 필드      | 타입   | 필수 | 설명                                  |
-| --------- | ------ | ---- | ------------------------------------- |
-| handle_nm | string | ✅   | 아이디 (`UserTB.handle_nm`)           |
-| password  | string | ✅   | 비밀번호                              |
-| device    | string | ✅   | User-Agent 또는 디바이스 식별자       |
-| location  | string |      | 접속 위치 (선택, IP 기반 지오코딩 등) |
+| 필드     | 타입   | 필수 | 설명                                           |
+| -------- | ------ | ---- | ---------------------------------------------- |
+| contact  | string | ✅   | 이메일 (type 0) 또는 전화번호 (type 1)         |
+| password | string | ✅   | 비밀번호                                       |
+| device   | string | ✅   | User-Agent 또는 디바이스 식별자                |
+| location | string |      | 접속 위치 (선택, IP 기반 지오코딩 등)          |
 
 **응답**
 
 | 상태 | code                  | 설명                                         |
 | ---- | --------------------- | -------------------------------------------- |
 | 200  | —                     | 로그인 성공                                  |
-| 401  | `INVALID_CREDENTIALS` | 아이디 또는 비밀번호 불일치                  |
+| 401  | `INVALID_CREDENTIALS` | 이메일/전화번호 또는 비밀번호 불일치         |
 | 403  | `ACCOUNT_SUSPENDED`   | 현재 활성 제재 존재 (`UserPunishTB` 기간 내) |
 | 403  | `ACCOUNT_INACTIVE`    | 탈퇴 계정 (`UserTB.active = false`)          |
 
@@ -271,21 +271,18 @@
 
 - 인증 수준: **JWT 필요** (permission >= 1)
 - 관련 테이블: `UserUnivTB`
-- 비고: 학생증 이미지는 `UserUnivTB.verify_school_card_img BLOB` 으로 DB 직접 저장.  
-  인증 후 **영업일 1개월 이내 폐기 필요** (컬럼 주석 원문)  
-  ⚠️ `school_id SMALLINT`이 `School.school_cd CHAR(7)`과 타입이 다름 — 스키마 확인 필요
+- 비고: 프로토타입 단계에서는 `application/json` 수신. 학생증 파일 업로드는 추후 multer + S3 연동 예정
 
-**Request Body (multipart/form-data)**
+**Request Body (application/json)**
 
 | 필드               | 타입   | 필수 | 설명                                            |
 | ------------------ | ------ | ---- | ----------------------------------------------- |
 | school_mail        | string | ✅   | 학교 이메일 (`UserUnivTB.school_mail`)          |
 | email_verify_token | string | ✅   | `/auth/otp/verify` 에서 받은 임시 토큰          |
-| school_id          | number | ✅   | 학교 ID (`UserUnivTB.school_id SMALLINT`)       |
+| school_cd          | string | ✅   | 학교 코드 (`School.school_cd CHAR(7)`)          |
 | department         | string | ✅   | 학부명 (`UserUnivTB.department`)                |
 | school_major_id    | number | ✅   | 학과 ID (`UserUnivTB.school_major_id SMALLINT`) |
 | grade              | number | ✅   | 학년 1~6 (`UserUnivTB.grade`)                   |
-| student_card       | file   | ✅   | 학생증 이미지 (jpg/png, BLOB으로 DB 저장)       |
 
 **응답**
 
@@ -479,8 +476,8 @@
 | 값  | 설명                                |
 | --- | ----------------------------------- |
 | 0   | 비공개 (임시저장)                   |
-| 1   | 공지 (관리자/운영자만 작성)         |
-| 2   | 일반 게시글                         |
+| 1   | 일반 게시글                         |
+| 2   | 공지 (관리자/운영자만 작성)         |
 | 3   | 질문 게시글 (`PostQuestionTB` 연결) |
 | 4   | 마켓 게시글 (`PostSaleTB` 연결)     |
 
@@ -851,7 +848,7 @@
 
 ---
 
-### DELETE /posts/:commentId/comments/:commentId — 댓글 삭제
+### DELETE /posts/:postId/comments/:commentId — 댓글 삭제
 
 - 인증 수준: **JWT 필요 (작성자 본인 또는 관리자)**
 - 비고: soft delete (`post_status = 2`)
@@ -939,10 +936,10 @@
 
 **Query Parameters**
 
-| 파라미터 | 타입   | 설명                                                  |
-| -------- | ------ | ----------------------------------------------------- |
-| cursor   | number | 이 `chat_block_id` 이전 메시지 로드 (없으면 최신부터) |
-| limit    | number | 개수 (기본값: 30)                                     |
+| 파라미터 | 타입   | 설명                                                    |
+| -------- | ------ | ------------------------------------------------------- |
+| before   | number | 이 `chat_msg_id` 이전 메시지 로드 (없으면 최신부터)     |
+| limit    | number | 개수 (기본값: 30)                                       |
 
 **응답 (200)**
 
@@ -979,13 +976,12 @@
 - 인증 수준: **JWT 필요 (채팅방 참여자)**
 - 관련 테이블: `ChatBlockTB`, `ChatBlockFileTB`
 
-**Request Body (multipart/form-data 또는 application/json)**
+**Request Body (application/json)**
 
-| 필드              | 타입   | 필수 | 설명                                         |
-| ----------------- | ------ | ---- | -------------------------------------------- |
-| chat_content      | string | ✅   | 메시지 내용 (최대 50자, 파일만 전송 시 `""`) |
-| chat_message_type | number | ✅   | `0`: 텍스트, `1`: 이미지, `2`: 동영상        |
-| files             | file[] |      | 첨부파일 (`ChatBlockFileTB`, 최대 5개)       |
+| 필드     | 타입   | 필수 | 설명                                    |
+| -------- | ------ | ---- | --------------------------------------- |
+| content  | string | ✅   | 메시지 내용                             |
+| msg_type | number |      | `0`: 텍스트(기본), `1`: 이미지          |
 
 **응답 (201)**
 
@@ -1106,26 +1102,18 @@
   "success": true,
   "data": [
     {
-      "major_cat_cd": "C",
-      "cat_major_nm": "공학계열",
-      "mid_categories": [
+      "major_cat_cd": "01",
+      "cat_major_nm": "학습",
+      "children": [
         {
-          "mid_cat_cd": 1,
-          "mid_cat_nm": "컴퓨터·정보통신",
-          "sub_categories": [
-            {
-              "sub_cat_cd": 1,
-              "sub_cat_nm": "컴퓨터공학"
-            }
-          ]
+          "sub_cat_id": 1,
+          "sub_cat_nm": "스터디모집"
         }
       ]
     }
   ]
 }
 ```
-
-> `major_cat_cd`: A~F (인문사회/자연과학/공학/예체능/의학/광역)
 
 ---
 

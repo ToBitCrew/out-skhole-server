@@ -40,10 +40,10 @@ const { authenticate } = require('../middlewares/auth.middleware');
  *                 example: user@example.com
  *               school_cd:
  *                 type: string
- *                 example: "7010417"
+ *                 example: "0000501"
  *               dept_cd:
  *                 type: string
- *                 example: "001"
+ *                 example: "0229793"
  *     responses:
  *       201:
  *         description: 회원가입 성공
@@ -100,11 +100,11 @@ router.post('/register', ctrl.register);
  *                 example: password123!
  *               device:
  *                 type: string
- *                 example: iPhone 15
+ *                 example: Devolver Test Device
  *                 description: 접속 기기 정보
  *               location:
  *                 type: string
- *                 example: Seoul
+ *                 example: Devolver Test Location
  *                 description: 접속 위치 (선택)
  *     responses:
  *       200:
