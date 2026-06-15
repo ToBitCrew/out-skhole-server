@@ -37,7 +37,7 @@ const getList = async (query) => {
   const { rows, total } = await postRepo.getList({
     page, limit,
     post_type: query.post_type != null ? parseInt(query.post_type) : null,
-    sub_cat_id: query.sub_cat_id ? parseInt(query.sub_cat_id) : null,
+    sub_cat_cd: query.sub_cat_cd ? parseInt(query.sub_cat_cd) : null,
     school_cd: query.school_cd || null,
   });
   const items = await Promise.all(rows.map(buildListItem));
@@ -101,7 +101,7 @@ const getPost = async (post_id) => {
 // ── 작성 ─────────────────────────────────────────────────────────────────────
 
 const createPost = async (uid, body) => {
-  const { post_title, post_content, post_type, post_status = 1, sub_cat_ids = [], tags = [], question, sale } = body;
+  const { post_title, post_content, post_type, post_status = 1, sub_cat_cd = [], tags = [], question, sale } = body;
 
   if (!post_title || !post_content || post_type == null) {
     throw new AppError('post_title, post_content, post_type은 필수입니다', 400, 'VALIDATION_ERROR');
@@ -120,8 +120,8 @@ const createPost = async (uid, body) => {
   }
 
   let subCatId = await postRepo.getNextSubCatId();
-  for (const sub_cat_id of sub_cat_ids) {
-    await postRepo.createSubCat(subCatId++, post_id, parseInt(sub_cat_id));
+  for (const sub_cat_cd of sub_cat_cd) {
+    await postRepo.createSubCat(subCatId++, post_id, parseInt(sub_cat_cd));
   }
 
   return { post_id };

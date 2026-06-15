@@ -52,7 +52,7 @@ router.get('/', ctrl.searchSchools);
  *         required: true
  *         schema:
  *           type: string
- *         example: "7010417"
+ *         example: "0000501"
  *         description: 학교 코드
  *       - in: query
  *         name: q

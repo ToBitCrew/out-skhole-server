@@ -2,16 +2,16 @@ const db = require('../config/db');
 
 // ── 목록 조회 ────────────────────────────────────────────────────────────────
 
-const getList = async ({ page, limit, post_type, sub_cat_id, school_cd }) => {
+const getList = async ({ page, limit, post_type, sub_cat_cd, school_cd }) => {
   const offset = (page - 1) * limit;
   const where = ['p.post_status = 2', 'p.post_id_top = 0'];
   const params = [];
 
   if (post_type != null) { where.push('p.post_type = ?'); params.push(post_type); }
   if (school_cd) { where.push('u.school_cd = ?'); params.push(school_cd); }
-  if (sub_cat_id) {
-    where.push('EXISTS (SELECT 1 FROM PostSubCategoryTB sc WHERE sc.post_id = p.post_id AND sc.sub_cat_id = ?)');
-    params.push(sub_cat_id);
+  if (sub_cat_cd) {
+    where.push('EXISTS (SELECT 1 FROM PostSubCategoryTB sc WHERE sc.post_id = p.post_id AND sc.sub_cat_cd = ?)');
+    params.push(sub_cat_cd);
   }
 
   const whereStr = 'WHERE ' + where.join(' AND ');
@@ -56,7 +56,7 @@ const search = async ({ q, page, limit, post_type, major_cat_cd }) => {
   if (major_cat_cd) {
     where.push(`EXISTS (
       SELECT 1 FROM PostSubCategoryTB psc
-      JOIN EduSubCategory esc ON psc.sub_cat_id = esc.sub_cat_cd
+      JOIN EduSubCategoryTB esc ON psc.sub_cat_cd = esc.sub_cat_cd
       WHERE psc.post_id = p.post_id AND esc.major_cat_cd = ?
     )`);
     params.push(major_cat_cd);
@@ -197,10 +197,10 @@ const getNextSubCatId = async () => {
   return rows[0].next_id;
 };
 
-const createSubCat = async (id, post_id, sub_cat_id) => {
+const createSubCat = async (id, post_id, sub_cat_cd) => {
   await db.query(
-    'INSERT INTO PostSubCategoryTB (id, post_id, sub_cat_id) VALUES (?, ?, ?)',
-    [id, post_id, sub_cat_id]
+    'INSERT INTO PostSubCategoryTB (id, post_id, sub_cat_cd) VALUES (?, ?, ?)',
+    [id, post_id, sub_cat_cd]
   );
 };
 

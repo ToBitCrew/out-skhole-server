@@ -31,7 +31,7 @@ router.use(authenticate);
  *         name: post_type
  *         schema:
  *           type: integer
- *         description: "게시글 유형 필터 (1: 일반, 2: 공지, 3: 질문, 4: 중고거래)"
+ *         description: "게시글 유형 필터 (0: 관리자, 1: 공지, 2: 일반, 3: 질문, 4: 마켓)"
  *       - in: query
  *         name: major_cat_cd
  *         schema:
@@ -150,7 +150,7 @@ router.get('/tags/autocomplete', ctrl.tagAutocomplete);
  *           type: integer
  *         description: "게시글 유형 (1: 일반, 2: 공지, 3: 질문, 4: 중고거래)"
  *       - in: query
- *         name: sub_cat_id
+ *         name: sub_cat_cd
  *         schema:
  *           type: integer
  *         description: 하위 카테고리 ID 필터
@@ -221,13 +221,13 @@ router.get('/', ctrl.getList);
  *                 example: 알고리즘 스터디 모집합니다. 주 2회 진행 예정입니다.
  *               post_type:
  *                 type: integer
- *                 example: 1
- *                 description: "1: 일반, 2: 공지, 3: 질문, 4: 중고거래"
+ *                 example: 2
+ *                 description: "0: 비공개, 1: 공지, 2: 일반, 3: 질문, 4: 마켓"
  *               post_status:
  *                 type: integer
  *                 example: 1
  *                 default: 1
- *               sub_cat_ids:
+ *               sub_cat_cds:
  *                 type: array
  *                 items:
  *                   type: integer

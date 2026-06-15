@@ -42,7 +42,7 @@ const ctrl = require('../controllers/category.controller');
  *                         items:
  *                           type: object
  *                           properties:
- *                             sub_cat_id:  { type: integer, example: 1 }
+ *                             sub_cat_cd:  { type: integer, example: 1 }
  *                             sub_cat_nm:  { type: string,  example: 스터디모집 }
  */
 router.get('/', ctrl.getTree);

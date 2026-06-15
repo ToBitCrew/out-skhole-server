@@ -512,7 +512,7 @@
 | page       | number |      | 페이지 (기본값: 1)                   |
 | limit      | number |      | 개수 (기본값: 20, 최대: 50)          |
 | post_type  | number |      | 게시글 타입 (2=일반, 3=질문, 4=마켓) |
-| sub_cat_id | number |      | 서브 카테고리 ID (`EduSubCategory`)  |
+| sub_cat_cd | number |      | 서브 카테고리 ID (`EduSubCategory`)  |
 | school_cd  | string |      | 학교 코드 필터 (작성자 학교 기준)    |
 
 **응답 (200)**
@@ -648,7 +648,7 @@
 | post_content | string   | ✅   | 본문 (TEXT)                                                      |
 | post_type    | number   | ✅   | 2=일반, 3=질문, 4=마켓 (0=비공개/임시저장)                       |
 | post_status  | number   | ✅   | `0`: 비공개(임시저장), `1`: 기본(공개)                           |
-| sub_cat_ids  | number[] |      | 서브 카테고리 ID 목록 (`PostSubCategoryTB`)                      |
+| sub_cat_cd  | number[] |      | 서브 카테고리 ID 목록 (`PostSubCategoryTB`)                      |
 | tags         | string[] |      | 태그 목록 최대 5개 (없으면 `PostTagTB` 신규 생성)                |
 | question     | object   |      | `post_type=3` 일 때 `{ pii_mask: boolean }`                      |
 | sale         | object   |      | `post_type=4` 일 때 `{ item_nm, item_type, item_status, price }` |
@@ -1106,7 +1106,7 @@
       "cat_major_nm": "학습",
       "children": [
         {
-          "sub_cat_id": 1,
+          "sub_cat_cd": 1,
           "sub_cat_nm": "스터디모집"
         }
       ]
