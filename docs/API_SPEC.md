@@ -1097,7 +1097,7 @@
 ### GET /categories — 전체 카테고리 트리
 
 - 인증 수준: **없음**
-- 관련 테이블: `EduMajorCategory`, `EduMidCategory`, `EduSubCategory`
+- 관련 테이블: `EduMajorCategoryTB`, `EduMidCategoryTB`, `EduSubCategoryTB`
 
 **응답 (200)**
 
